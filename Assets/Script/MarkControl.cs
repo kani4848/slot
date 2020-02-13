@@ -29,7 +29,7 @@ public class MarkControl : MonoBehaviour
         coinManager = transform.root.GetComponent<CoinManager>();
     }
 
-    private void Update()
+    private void FixedUpdate()
     {
         //リール停止の処理
         if (spinOff)

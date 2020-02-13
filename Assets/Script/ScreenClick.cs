@@ -17,10 +17,17 @@ public class ScreenClick : MonoBehaviour
 
     private void Update()
     {
+#if UNITY_EDITOR
         if (EventSystem.current.IsPointerOverGameObject())
         {
             return;
         }
+#else
+        if (EventSystem.current.IsPointerOverGameObject(Input.GetTouch(0).fingerId))
+        {
+            return;
+        }
+#endif
         if (Input.GetMouseButtonDown(0))
         {
             OnClick();

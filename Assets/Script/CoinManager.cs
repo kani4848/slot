@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
+using UnityEngine.Advertisements;
 
 public class CoinManager : MonoBehaviour
 {
@@ -44,10 +45,10 @@ public class CoinManager : MonoBehaviour
     public bool isBingo;
 
     public GameObject winEffect;
-    
+
     private void Start()
     {
-        Screen.SetResolution(1280, 720, false, 60);
+        //Screen.SetResolution(1280, 720, true, 60);
         winEffect.SetActive(false);
     }
 
