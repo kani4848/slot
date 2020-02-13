@@ -1,0 +1,8 @@
+Library/PlayerDataCache
+Library/Artifacts
+Assets/Plugins
+*.cache
+*.exe
+*.dll
+*.log
+*.pdb
