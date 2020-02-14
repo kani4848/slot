@@ -1,12 +1,14 @@
 ﻿<Properties StartupConfiguration="{58F64D69-C53A-391D-FE8B-CC7439ED9064}|">
-  <MonoDevelop.Ide.Workbench ActiveDocument="Assets/Script/Advertisement.cs">
+  <MonoDevelop.Ide.Workbench ActiveDocument="Assets/Script/AdTest.cs">
     <Files>
-      <File FileName="Assets/Script/CoinManager.cs" Line="48" Column="1" />
+      <File FileName="Assets/Script/CoinManager.cs" Line="75" Column="1" />
       <File FileName="Assets/Script/CameraSetting.cs" />
       <File FileName="Assets/Script/ScreenClick.cs" />
-      <File FileName="Assets/Script/MarkControl.cs" />
-      <File FileName="Assets/Script/Advertisement.cs" Line="10" Column="29" />
-      <File FileName="Assets/UnityAds/link.xml" />
+      <File FileName="Assets/Script/MarkControl.cs" Line="26" Column="72" />
+      <File FileName="Assets/UnityAds/link.xml" Line="1" Column="1" />
+      <File FileName="Assets/Script/AdTest.cs" Line="13" Column="10" />
+      <File FileName="Assets/Script/RotateStop.cs" Line="1" Column="1" />
+      <File FileName="Assets/Script/CreateReel.cs" Line="45" Column="36" />
     </Files>
     <Pads>
       <Pad Id="ProjectPad">
@@ -14,7 +16,7 @@
           <Node name="slot" expanded="True">
             <Node name="Assets" expanded="True">
               <Node name="Script" expanded="True">
-                <Node name="Advertisement.cs" selected="True" />
+                <Node name="AdTest.cs" selected="True" />
               </Node>
               <Node name="UnityAds" expanded="True" />
             </Node>

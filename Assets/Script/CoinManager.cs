@@ -18,17 +18,9 @@ public class CoinManager : MonoBehaviour
 
     public Animator yukarin;
 
-    public MarkControl reel1_upper;
-    public MarkControl reel1_middle;
-    public MarkControl reel1_bottom;
-
-    public MarkControl reel2_upper;
-    public MarkControl reel2_middle;
-    public MarkControl reel2_bottom;
-
-    public MarkControl reel3_upper;
-    public MarkControl reel3_middle;
-    public MarkControl reel3_bottom;
+    public CreateReel reel1;
+    public CreateReel reel2;
+    public CreateReel reel3;
 
     public RotateStart rotateStart;
 
@@ -80,51 +72,46 @@ public class CoinManager : MonoBehaviour
             goCount = false;
             rotateStart.reelAllStoped = false;
 
-            if (reel1_middle.markName == reel2_middle.markName && reel2_middle.markName == reel3_middle.markName)
+            if (reel1.middleMark.name == reel2.middleMark.name && reel2.middleMark.name == reel3.middleMark.name)
             {
                 Debug.Log("真ん中の列で当たり！");
-                GiveReward(reel1_middle.markName);
-                reel1_middle.flash = true;
-                reel2_middle.flash = true;
-                reel3_middle.flash = true;
-            }else if (reel1_upper.markName == reel2_upper.markName && reel2_upper.markName == reel3_upper.markName)
+                GiveReward(reel1.middleMark, reel2.middleMark, reel3.middleMark);
+            }
+            else if (reel1.upperMark.name == reel2.upperMark.name && reel2.upperMark.name == reel3.upperMark.name)
             {
                 Debug.Log("上の列で当たり！");
-                GiveReward(reel1_upper.markName);
-                reel1_upper.flash = true;
-                reel2_upper.flash = true;
-                reel3_upper.flash = true;
-            }else if (reel1_bottom.markName == reel2_bottom.markName && reel2_bottom.markName == reel3_bottom.markName)
+                GiveReward(reel1.upperMark, reel2.upperMark, reel3.upperMark);
+            }
+            else if (reel1.bottomMark.name == reel2.bottomMark.name && reel2.bottomMark.name == reel3.bottomMark.name)
             {
                 Debug.Log("下の列で当たり！");
-                GiveReward(reel1_bottom.markName);
-                reel1_bottom.flash = true;
-                reel2_bottom.flash = true;
-                reel3_bottom.flash = true;
-            }else if (reel1_upper.markName == reel2_middle.markName && reel2_middle.markName == reel3_bottom.markName)
+                GiveReward(reel1.bottomMark , reel2.bottomMark , reel3.bottomMark);
+            }
+            else if (reel1.upperMark.name == reel2.middleMark.name && reel2.middleMark.name == reel3.bottomMark.name)
             {
                 Debug.Log("左上から斜めの列で当たり！");
-                GiveReward(reel1_upper.markName);
-                reel1_upper.flash = true;
-                reel2_middle.flash = true;
-                reel3_bottom.flash = true;
-            }else if (reel1_bottom.markName == reel2_middle.markName && reel2_middle.markName == reel3_upper.markName)
+                GiveReward(reel1.upperMark , reel2.middleMark , reel3.bottomMark);
+            }
+            else if (reel1.bottomMark.name == reel2.middleMark.name && reel2.middleMark.name == reel3.upperMark.name)
             {
                 Debug.Log("右上から斜めの列で当たり！");
-                GiveReward(reel1_bottom.markName);
-                reel1_bottom.flash = true;
-                reel2_middle.flash = true;
-                reel3_upper.flash = true;
+                GiveReward(reel1.bottomMark , reel2.middleMark , reel3.upperMark);
             }
         }
     }
 
     
 
-    private void GiveReward(string mark)
+    private void GiveReward(GameObject reel1Mark, GameObject reel2Mark, GameObject reel3Mark)
     {
+        string rewardMark = reel1Mark.GetComponent<MarkControl>().name;
+
+        reel1Mark.GetComponent<MarkControl>().flash = true;
+        reel2Mark.GetComponent<MarkControl>().flash = true;
+        reel3Mark.GetComponent<MarkControl>().flash = true;
+
         yukarin.SetTrigger("toWin");
-        switch (mark)
+        switch (rewardMark)
         {
             case "bar":
                 payOut = 50;

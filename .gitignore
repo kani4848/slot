@@ -1,5 +1,4 @@
 Library/PlayerDataCache
-Library/Artifacts
 Assets/Plugins
 *.cache
 *.exe

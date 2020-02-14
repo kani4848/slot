@@ -9,6 +9,13 @@ public class CreateReel : MonoBehaviour
     public GameObject mark;
     public float markHeight;
     public int reelNum;
+
+    public int topNum;
+
+    public GameObject upperMark;
+    public GameObject middleMark;
+    public GameObject bottomMark;
+
     string[] reel1 = { "bar", "bud", "sai", "bud", "bel", "sev", "sai", "bud", "sai", "bud", "bar", "che", "bud", "sai", "bud", "sev", "pie", "bud", "sai", "bud", "che" };
     string[] reel2 = { "sai", "bel", "bud", "che", "sai", "sev", "bud", "che", "sai", "bel", "bud", "che", "sai", "bar", "bud", "che", "pie", "sai", "sev", "bud", "che" };
     string[] reel3 = { "bud", "pie", "bel", "sai", "bud", "sev", "bar", "bel", "sai", "bud", "pie", "bel", "sai", "bud", "pie", "bel", "sai", "bud", "pie", "bel", "sai" };
@@ -36,7 +43,7 @@ public class CreateReel : MonoBehaviour
         {
             GameObject markIns = Instantiate(mark);
             markDic.Add(i,markIns);
-            markIns.name = "Reel_"+reelNum+"_"+reel[i]+"_"+i;
+            markIns.name = reel[i];
             markIns.transform.parent = gameObject.transform;
             MarkControl markContorol = markIns.GetComponent<MarkControl>();
             markContorol.markNum = i;
@@ -96,22 +103,38 @@ public class CreateReel : MonoBehaviour
             {
                 maxNum = reel1.Length - 1;
             }
-
+            topNum = maxNum;
         }
 
         for (int i = 0; i < reel1.Length; i++)
         {
-
+            int stopNum = 0;
             MarkControl markControl = markDic[i].GetComponent<MarkControl>();
-            int stopNum = i - maxNum;
-            if(stopNum >= 0)
+
+            if ((i - maxNum) >= 0)
             {
-                markDic[i].transform.position = markControl.startPos - new Vector3(0, Mathf.Abs(i - maxNum) * markHeight, 0);
+                stopNum = i - maxNum;
             }
             else
             {
-                markDic[i].transform.position = markControl.startPos - new Vector3(0, Mathf.Abs(reel1.Length + stopNum) * markHeight, 0);
+                stopNum = reel1.Length + (i - maxNum);
             }
+
+            switch (stopNum)
+            {
+                case 6:
+                    upperMark = markControl.gameObject;
+                    break;
+                case 7:
+                    middleMark = markControl.gameObject;
+                    break;
+                case 8:
+                    bottomMark = markControl.gameObject;
+                    break;
+            }
+            
+            markDic[i].transform.position = markControl.startPos - new Vector3(0, stopNum * markHeight, 0);
+            
             markControl.spinOff = true;
             markControl.spinOn = false;
         }
