@@ -5,39 +5,42 @@ using UnityEngine;
 public class RotateStart : MonoBehaviour
 {
     public bool pushed = false;
-    public bool reelAllStoped = false;
 
     public Renderer flashEffect;
 
+    public BetButtonControl betButton;
     public RotateStop stopButtom1;
     public RotateStop stopButtom2;
     public RotateStop stopButtom3;
 
     public AudioSource rotateSound;
 
-    private void Update()
+    private void Start()
     {
-        if (stopButtom1.pushed && stopButtom2.pushed && stopButtom3.pushed)
+        flashEffect.enabled = false;
+    }
+
+    private void FixedUpdate()
+    {
+        if (betButton.pushed && !pushed)
         {
             flashEffect.enabled = true;
-            reelAllStoped = true;
-
-            pushed = false;
-            stopButtom1.pushed = false;
-            stopButtom2.pushed = false;
-            stopButtom3.pushed = false;
         }
     }
 
     public void Onclick()
     {
-        if (!pushed)
+        if (!pushed && betButton.pushed)
         {
             flashEffect.enabled = false;
 
             rotateSound.Play();
 
             pushed = true;
+
+            stopButtom1.pushed = false;
+            stopButtom2.pushed = false;
+            stopButtom3.pushed = false;
 
             stopButtom1.flashEffect.GetComponent<Renderer>().enabled = true;
             stopButtom2.flashEffect.GetComponent<Renderer>().enabled = true;

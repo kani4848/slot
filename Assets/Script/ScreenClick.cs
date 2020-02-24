@@ -5,29 +5,34 @@ using UnityEngine.EventSystems;
 
 public class ScreenClick : MonoBehaviour
 {
+    public BetButtonControl betButton;
     public RotateStart rotateButton;
     public RotateStop stopButton1;
     public RotateStop stopButton2;
     public RotateStop stopButton3;
 
-    private float nextTime;
+    private float nextTime=0;
     private float interval = 0.2f;
 
     public CoinManager coinManager;
 
     private void Update()
     {
+        /*
 #if UNITY_EDITOR
+        */
         if (EventSystem.current.IsPointerOverGameObject())
         {
             return;
         }
-#else
+        /*
+    #else
         if (EventSystem.current.IsPointerOverGameObject(Input.GetTouch(0).fingerId))
         {
             return;
         }
-#endif
+    #endif
+    */
         if (Input.GetMouseButtonDown(0))
         {
             OnClick();
@@ -36,8 +41,13 @@ public class ScreenClick : MonoBehaviour
 
     public void OnClick()
     {
-
-        if (!rotateButton.pushed)
+        if (!betButton.pushed && Time.time > nextTime)
+        {
+            betButton.Onclick();
+            nextTime = Time.time + interval;
+            return;
+        }
+        if (!rotateButton.pushed && Time.time > nextTime)
         {
             rotateButton.Onclick();
             nextTime = Time.time + interval;

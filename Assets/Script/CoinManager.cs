@@ -6,15 +6,20 @@ using UnityEngine.Advertisements;
 
 public class CoinManager : MonoBehaviour
 {
+    private List<GameObject> bingoMarkList = new List<GameObject>();
     public int payOut = 0;
     public int coinCount = 0;
 
     public Text coinCountUI;
     public Text payOutUI;
+
+    public GameObject hukidashi;
     public Text hukidasi1;
     public Text hukidasi2;
 
-    public AudioSource coinSE;
+    public AudioSource audioSource;
+    public AudioClip bingoSE;
+    public AudioClip coinSE;
 
     public Animator yukarin;
 
@@ -22,7 +27,7 @@ public class CoinManager : MonoBehaviour
     public CreateReel reel2;
     public CreateReel reel3;
 
-    public RotateStart rotateStart;
+    public BetButtonControl betButton;
 
     private bool goCount = false;
 
@@ -42,16 +47,23 @@ public class CoinManager : MonoBehaviour
     {
         //Screen.SetResolution(1280, 720, true, 60);
         winEffect.SetActive(false);
+        hukidashi.SetActive(false);
     }
 
     private void Update()
     {
-        if (rotateStart.pushed)
+        if (betButton.pushed)
         {
             if (isBingo)
             {
-                yukarin.SetTrigger("toIdle");
+                AnimatorClipInfo[] clipInfo = yukarin.GetCurrentAnimatorClipInfo(0);
+                string clipName = clipInfo[0].clip.name;
+                if (clipName == "yukarin_winIdle")
+                {
+                    yukarin.SetTrigger("toIdle");
+                }
                 isBingo = false;
+                hukidashi.SetActive(false);
             }
 
             winEffect.SetActive(false);
@@ -67,97 +79,163 @@ public class CoinManager : MonoBehaviour
                 bingoCountUI.text = (bingoCount / gameCount * 100).ToString("N1");
             }
         }
-        if (rotateStart.reelAllStoped)
+        if (betButton.reelAllStoped)
         {
-            goCount = false;
-            rotateStart.reelAllStoped = false;
-
-            if (reel1.middleMark.name == reel2.middleMark.name && reel2.middleMark.name == reel3.middleMark.name)
-            {
-                Debug.Log("真ん中の列で当たり！");
-                GiveReward(reel1.middleMark, reel2.middleMark, reel3.middleMark);
-            }
-            else if (reel1.upperMark.name == reel2.upperMark.name && reel2.upperMark.name == reel3.upperMark.name)
-            {
-                Debug.Log("上の列で当たり！");
-                GiveReward(reel1.upperMark, reel2.upperMark, reel3.upperMark);
-            }
-            else if (reel1.bottomMark.name == reel2.bottomMark.name && reel2.bottomMark.name == reel3.bottomMark.name)
-            {
-                Debug.Log("下の列で当たり！");
-                GiveReward(reel1.bottomMark , reel2.bottomMark , reel3.bottomMark);
-            }
-            else if (reel1.upperMark.name == reel2.middleMark.name && reel2.middleMark.name == reel3.bottomMark.name)
-            {
-                Debug.Log("左上から斜めの列で当たり！");
-                GiveReward(reel1.upperMark , reel2.middleMark , reel3.bottomMark);
-            }
-            else if (reel1.bottomMark.name == reel2.middleMark.name && reel2.middleMark.name == reel3.upperMark.name)
-            {
-                Debug.Log("右上から斜めの列で当たり！");
-                GiveReward(reel1.bottomMark , reel2.middleMark , reel3.upperMark);
-            }
+            CheckBingo();
         }
     }
 
-    
-
-    private void GiveReward(GameObject reel1Mark, GameObject reel2Mark, GameObject reel3Mark)
+    private void CheckBingo()
     {
-        string rewardMark = reel1Mark.GetComponent<MarkControl>().name;
+        goCount = false;
+        betButton.reelAllStoped = false;
 
-        reel1Mark.GetComponent<MarkControl>().flash = true;
-        reel2Mark.GetComponent<MarkControl>().flash = true;
-        reel3Mark.GetComponent<MarkControl>().flash = true;
+        if (reel2.upperMark.name != "che" && reel2.middleMark.name != "che" && reel2.bottomMark.name != "che")
+        {
+            if (reel1.upperMark.name == "che")
+            {
+                bingoMarkList.Add(reel1.upperMark);
+                payOut += CheckReward("che");
+                isBingo = true;
+            }
+            else if(reel1.middleMark.name == "che")
+            {
+                bingoMarkList.Add(reel1.middleMark);
+                payOut += CheckReward("che");
+                isBingo = true;
+            }
+            else if(reel1.bottomMark.name == "che")
+            {
+                bingoMarkList.Add(reel1.bottomMark);
+                payOut += CheckReward("che");
+                isBingo = true;
+            }
+        }
 
-        yukarin.SetTrigger("toWin");
-        switch (rewardMark)
+        if (reel1.middleMark.name == reel2.middleMark.name && reel2.middleMark.name == reel3.middleMark.name)
+        {
+            Debug.Log("真ん中の列で当たり！");
+            payOut += CheckReward(reel1.middleMark.name);
+            bingoMarkList.Add(reel1.middleMark);
+            bingoMarkList.Add(reel2.middleMark);
+            bingoMarkList.Add(reel3.middleMark);
+            isBingo = true;
+        }
+        else if (reel1.upperMark.name == reel2.upperMark.name && reel2.upperMark.name == reel3.upperMark.name)
+        {
+            Debug.Log("上の列で当たり！");
+            payOut += CheckReward(reel1.upperMark.name);
+            bingoMarkList.Add(reel1.upperMark);
+            bingoMarkList.Add(reel2.upperMark);
+            bingoMarkList.Add(reel3.upperMark);
+            isBingo = true;
+        }
+        else if (reel1.bottomMark.name == reel2.bottomMark.name && reel2.bottomMark.name == reel3.bottomMark.name)
+        {
+            Debug.Log("下の列で当たり！");
+            payOut += CheckReward(reel1.bottomMark.name);
+            bingoMarkList.Add(reel1.bottomMark);
+            bingoMarkList.Add(reel2.bottomMark);
+            bingoMarkList.Add(reel3.bottomMark);
+            isBingo = true;
+        }
+        else if (reel1.upperMark.name == reel2.middleMark.name && reel2.middleMark.name == reel3.bottomMark.name)
+        {
+            Debug.Log("左上から斜めの列で当たり！");
+            payOut += CheckReward(reel1.upperMark.name);
+            bingoMarkList.Add(reel1.upperMark);
+            bingoMarkList.Add(reel2.middleMark);
+            bingoMarkList.Add(reel3.bottomMark);
+            isBingo = true;
+        }
+        else if (reel1.bottomMark.name == reel2.middleMark.name && reel2.middleMark.name == reel3.upperMark.name)
+        {
+            Debug.Log("右上から斜めの列で当たり！");
+            payOut += CheckReward(reel1.bottomMark.name);
+            bingoMarkList.Add(reel1.bottomMark);
+            bingoMarkList.Add(reel2.middleMark);
+            bingoMarkList.Add(reel3.upperMark);
+            isBingo = true;
+        }
+
+        if (isBingo)
+        {
+            GiveReward();
+        }
+    }
+
+    private int CheckReward(string bingoName)
+    {
+        int reward = 0;
+
+        switch (bingoName)
         {
             case "bar":
-                payOut = 50;
+                reward = 50;
                 break;
 
             case "bel":
-                payOut = 40;
+                reward = 40;
                 break;
 
             case "bud":
-                payOut = 3;
+                reward = 3;
                 break;
 
             case "che":
-                payOut = 6;
+                reward = 1;
                 break;
 
             case "pie":
-                payOut = 500;
+                reward = 500;
                 break;
 
             case "sai":
-                payOut = 30;
+                reward = 30;
                 break;
 
             case "sev":
-                payOut = 100;
+                reward = 100;
                 break;
         }
+        return reward;
+    }
+
+    private void GiveReward()
+    {
+        foreach(GameObject bingoMark in bingoMarkList)
+        {
+            bingoMark.GetComponent<MarkControl>().flash = true;
+        }
+        if (payOut >1)
+        {
+            yukarin.SetTrigger("toWin");
+            winEffect.SetActive(true);
+            audioSource.PlayOneShot(bingoSE);
+        }
+        else
+        {
+            audioSource.PlayOneShot(coinSE);
+        }
+        
+  
         coinCount += payOut;
         coinCountUI.text = coinCount.ToString();
         payOutUI.text = payOut.ToString();
+
+        hukidashi.SetActive(true);
         hukidasi1.text = payOut.ToString();
         hukidasi2.text = payOut.ToString();
-        coinSE.Play();
-
+        
         totalCoinCount += payOut;
         totalCoinCountUI.text = totalCoinCount.ToString();
 
         bingoCount++;
         bingoCountUI.text = (bingoCount / gameCount * 100).ToString("N2");
 
-
+        bingoMarkList.Clear();
         uiShield.ShieldOn(1.0f);
-        winEffect.SetActive(true);
-
+        payOut = 0;
         isBingo = true;
     }
 }

@@ -46,7 +46,7 @@ public class MarkControl : MonoBehaviour
         {
             flash = false;
             renderer.material.color = new Color(1, 1, 1, 1);
-            speed = 0.23f;
+            speed = markHeight*21*0.02f*80/60;
             spinOn = false;
         }
 
